@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.views.generic import DetailView
 from .models import Library
+from django.contrib.auth.decorators import permission_required
+from .models import Book
 def list_books(request):
-    books = Book.objects.all()
+        books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})@permission_required('relationship_app.can_add_book')
 def add_book(request):
     # Logic to add a book
