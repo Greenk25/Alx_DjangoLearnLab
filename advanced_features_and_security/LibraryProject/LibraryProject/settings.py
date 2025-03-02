@@ -123,4 +123,34 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Add this line to point to your custom user model
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+import os
+
+# Set DEBUG to False in production
+DEBUG = False
+
+# Secure settings
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Ensure you have the following security settings configured:
+ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']  # Replace with your actual domain
+SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key')  # Use an environment variable for your secret key
+
+# Add django-csp middleware if implementing CSP
+INSTALLED_APPS = [
+    # other apps,
+    'csp',
+]
+
+MIDDLEWARE = [
+    # other middleware,
+    'csp.middleware.CSPMiddleware',
+]
+
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", 'https://stackpath.bootstrapcdn.com')
+CSP_SCRIPT_SRC = ("'self'", 'https://stackpath.bootstrapcdn.com')
 

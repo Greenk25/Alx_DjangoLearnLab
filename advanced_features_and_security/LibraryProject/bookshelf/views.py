@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import permission_required
 from .models import Book
+from django.contrib.auth.decorators import permission_required
+from django.db.models import Q
 
 # List books
+
 @permission_required('bookshelf.can_view', raise_exception=True)
 def list_books(request):
     books = Book.objects.all()
@@ -44,5 +46,9 @@ def delete_book(request, pk):
         book.delete()
         return redirect('book_list')
     return render(request, 'delete_book.html', {'book': book})
-
+# Example search view that avoids SQL injection
+def search_books(request):
+    query = request.GET.get('q')
+    books = Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query))
+    return render(request, 'book_list.html', {'books': books})
 # Create your views here.
