@@ -1,6 +1,7 @@
 <!-- Your form_example.html file -->
 <form method="post">
     {% csrf_token %}
+    {{ form.as_p }}
     <!-- Form fields here -->
     <button type="submit">Submit</button>
 </form>
