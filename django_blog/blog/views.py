@@ -19,6 +19,18 @@ from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from  django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixinI
 from .models import Comment, Post
+from django.db.models import Q
+def search(request):
+    query = request.GET.get('q')
+    results = []
+    if query:
+        results = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, 'blog/search_results.html', {'query': query, 'results': results})
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['content']
@@ -73,6 +85,11 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'  # Template for listing posts
     context_object_name = 'posts'
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name')
+        if tag_name:
+            return Post.objects.filter(tags__name=tag_name).distinct()
+        return Post.objects.all()
 
 class PostDetailView(DetailView):
     model = Post

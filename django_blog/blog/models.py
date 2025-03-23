@@ -5,6 +5,14 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django import forms
 from .models import Post
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+class Post(models.Model):
+    # Your existing fields...
+    tags = models.ManyToManyField(Tag, related_name='posts', blank=True)
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')  # Link to Post model

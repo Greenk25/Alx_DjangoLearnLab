@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import add_comment
+from .views import search
 from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
 from .views import (
     PostListView,
@@ -8,6 +9,10 @@ from .views import (
     PostUpdateView,
     PostDeleteView,
 )
+urlpatterns += [
+    path('search/', search, name='search'),
+    path('tags/<str:tag_name>/', PostListView.as_view(), name='posts-by-tag'),
+]
 urlpatterns += [
     path('post/<int:post_pk>/comments/new/', CommentCreateView.as_view(), name='comment-create'),
     path('comment/<int:pk>/update/', CommentUpdateView.as_view(), name='comment-update'),
