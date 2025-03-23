@@ -5,6 +5,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django import forms
 from .models import Post
+from taggit.managers import TaggableManager
+class Post(models.Model):
+    # Your existing fields...
+    tags = TaggableManager()
 class Tag(models.Model):
     name = models.CharField(max_length=50, unique=True)
 
@@ -27,7 +31,7 @@ class Comment(models.Model):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content','tags']
 
 class Post(models.Model):
     title = models.CharField(max_length=200)
