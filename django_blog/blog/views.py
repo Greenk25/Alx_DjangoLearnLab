@@ -16,9 +16,44 @@ from .models import Post
 from .forms import PostForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Post, Comment
 from .forms import CommentForm
+from  django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixinI
+from .models import Comment, Post
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'blog/comment_form.html'  # A form template for creating a comment
 
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['post_pk'])  # Retrieve the post
+        form.instance.post = post  # Link the comment to the specific post
+        form.instance.author = self.request.user  # Set the comment author to the logged-in user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # Redirect back to the post detail view
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    fields = ['content']
+    template_name = 'blog/comment_form.html'  # Reuse the same form template for editing
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author  # Only allow the author to edit their own comment
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # Redirect back to the post detail view
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_confirm_delete.html'  # Template for confirming deletion
+
+    def test_func(self):
+        comment = self.get_object()
+        return self.request.user == comment.author  # Only allow the author to delete their own comment
+
+    def get_success_url(self):
+        return self.object.post.get_absolute_url()  # Redirect back to the post detail view
+    
 @login_required
 def add_comment(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
