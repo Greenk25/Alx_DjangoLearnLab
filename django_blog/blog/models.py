@@ -4,6 +4,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django import forms
+from .models import Post
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'content']
+
 class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
