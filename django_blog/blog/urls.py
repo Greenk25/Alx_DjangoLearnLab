@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import add_comment
 from .views import search
+from .views import PostByTagListView
 from .views import CommentCreateView, CommentUpdateView, CommentDeleteView
 from .views import (
     PostListView,
@@ -9,6 +10,10 @@ from .views import (
     PostUpdateView,
     PostDeleteView,
 )
+urlpatterns += [
+    path('tags/<slug:tag_slug>/', PostByTagListView.as_view(), name='posts-by-tag'),
+]
+
 urlpatterns += [
     path('search/', search, name='search'),
     path('tags/<str:tag_name>/', PostListView.as_view(), name='posts-by-tag'),
