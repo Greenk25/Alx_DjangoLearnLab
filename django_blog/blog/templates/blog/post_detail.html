@@ -1,5 +1,5 @@
 {% extends "blog/base.html" %}
-
+{% for comment in post.comments.all %}
 {% block content %}
 <h2>{{ post.title }}</h2>
 <p><strong>Author:</strong> {{ post.author }}</p>
@@ -8,5 +8,12 @@
 
 <a href="{% url 'post-edit' post.pk %}">Edit Post</a> |
 <a href="{% url 'post-delete' post.pk %}">Delete Post</a>
+ <div>
+        <p><strong>{{ comment.author }}</strong> said:</p>
+        <p>{{ comment.content }}</p>
+        <p><small>Posted on {{ comment.created_at }}</small></p>
+    </div>
+{% endfor %}
+<a href="{% url 'add-comment' post.id %}">Add a Comment</a>
 {% endblock content %}
 

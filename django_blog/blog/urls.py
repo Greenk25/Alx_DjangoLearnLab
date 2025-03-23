@@ -1,4 +1,5 @@
 from django.urls import path
+from .views import add_comment
 from .views import (
     PostListView,
     PostDetailView,
@@ -6,7 +7,9 @@ from .views import (
     PostUpdateView,
     PostDeleteView,
 )
-
+urlpatterns = [
+    path('posts/<int:post_id>/comments/new/', add_comment, name='add-comment'),
+]
 urlpatterns = [
     path('post/', PostListView.as_view(), name='post-list'),  # List all posts
     path('post/<int:pk>/', PostDetailView.as_view(), name='post-detail'),  # View details of a single post
