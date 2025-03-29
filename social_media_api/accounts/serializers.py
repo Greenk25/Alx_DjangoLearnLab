@@ -7,7 +7,7 @@ User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     # Add a write-only password field for creating users
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField()
 
     class Meta:
         model = User
@@ -15,7 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         # Create a new user using the custom user model
-        user = User.objects.create_user(
+        user = get_user_model().objects.create_user (
             username=validated_data['username'],
             email=validated_data.get('email'),
             password=validated_data['password']
